@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #222;
+}
+
+.app {
+  text-align: center;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: white;
+}
+
+.map {
+  max-width: 95vw;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.info {
+  margin-top: 15px;
+  color: #aaa;
+}
