@@ -53,7 +53,7 @@ function App() {
 
       setHistory(runs);
 
-      // Top 5 winners
+      // Top 10 winners
       const winnerCounts = {};
 
       runs.forEach((run) => {
@@ -69,7 +69,7 @@ function App() {
           wins,
         }))
         .sort((a, b) => b.wins - a.wins)
-        .slice(0, 5);
+        .slice(0, 10);
 
       setTopWinners(top);
     });
@@ -129,9 +129,9 @@ function App() {
           )}
         </div>
 
-        {/* Top 5 winners */}
+        {/* Top 10 winners */}
         <div className="stats-section">
-          <h2>Top 5 Winners</h2>
+          <h2>Top 10 Winners</h2>
 
           <div className="grid header winner-grid">
             <div>#</div>
