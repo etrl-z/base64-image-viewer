@@ -39,44 +39,61 @@ function App() {
     // Last 10 runs
     const historyRef = collection(db, "history");
 
-    const historyQuery = query(
+    const lastRunsQuery = query(
       historyRef,
       orderBy("timestamp", "desc"),
       limit(10)
     );
 
-    const unsubscribeHistory = onSnapshot(historyQuery, (snapshot) => {
-      const runs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    const unsubscribeLastRuns = onSnapshot(
+      lastRunsQuery,
+      (snapshot) => {
+        const runs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      setHistory(runs);
+        setHistory(runs);
+      }
+    );
 
-      // Top 10 winners
-      const winnerCounts = {};
+    // Full history - used for Top 10
+    const allHistoryQuery = query(
+      historyRef,
+      orderBy("timestamp", "desc")
+    );
 
-      runs.forEach((run) => {
-        if (!run.winnerName) return;
+    const unsubscribeAllHistory = onSnapshot(
+      allHistoryQuery,
+      (snapshot) => {
+        const winnerCounts = {};
 
-        winnerCounts[run.winnerName] =
-          (winnerCounts[run.winnerName] || 0) + 1;
-      });
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
 
-      const top = Object.entries(winnerCounts)
-        .map(([winnerName, wins]) => ({
-          winnerName,
-          wins,
-        }))
-        .sort((a, b) => b.wins - a.wins)
-        .slice(0, 10);
+          if (!data.winnerName) return;
 
-      setTopWinners(top);
-    });
+          winnerCounts[data.winnerName] =
+            (winnerCounts[data.winnerName] || 0) + 1;
+        });
 
+        const top = Object.entries(winnerCounts)
+          .map(([winnerName, wins]) => ({
+            winnerName,
+            wins,
+          }))
+          .sort((a, b) => b.wins - a.wins)
+          .slice(0, 10);
+
+        setTopWinners(top);
+      }
+    );
+
+    // Cleanup
     return () => {
       unsubscribeImage();
-      unsubscribeHistory();
+      unsubscribeLastRuns();
+      unsubscribeAllHistory();
     };
   }, []);
 
@@ -109,14 +126,18 @@ function App() {
           <h2>Last 10 Runs</h2>
 
           <div className="grid header">
-            <div>#</div>
+            <div>Date</div>
             <div>Winner</div>
-            <div>Duration</div>
+            <div>Turns</div>
           </div>
 
-          {history.map((run, index) => (
+          {history.map((run) => (
             <div className="grid row" key={run.id}>
-              <div>{index + 1}</div>
+              <div>
+                {run.timestamp?.toDate?.().toLocaleString("it-IT", {
+                  day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
+                })}
+              </div>
               <div>{run.winnerName}</div>
               <div>{run.duration}</div>
             </div>
