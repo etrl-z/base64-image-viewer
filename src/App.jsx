@@ -18,8 +18,10 @@ function App() {
   const [topWinners, setTopWinners] = useState([]);
 
   useEffect(() => {
-    // Current map
-    const imageRef = doc(db, "maps", "current");
+    
+    const mapDocument = import.meta.env.VITE_MAP_DOCUMENT || "current";
+
+    const imageRef = doc(db, "maps", mapDocument);
 
     const unsubscribeImage = onSnapshot(imageRef, (snapshot) => {
       if (!snapshot.exists()) {
