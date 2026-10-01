@@ -57,6 +57,10 @@
   white-space: nowrap;
 }
 
+.grid > div:last-child {
+  text-align: right;
+}
+
 .grid.header {
   background: #333;
   color: #aaa;
