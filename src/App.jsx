@@ -19,6 +19,7 @@ function App() {
   const [topWinners, setTopWinners] = useState([]);
   const [allWinners, setAllWinners] = useState([]);
   const [longestRuns, setLongestRuns] = useState([]);
+  const [fastestRuns, setFastestRuns] = useState([]);
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
@@ -71,11 +72,19 @@ function App() {
       setLongestRuns(runs);
     });
 
+    // Fastest runs
+    const fastestRunsQuery = query(historyRef, orderBy("duration", "asc"), limit(100));
+    const unsubscribeFastest = onSnapshot(fastestRunsQuery, (snapshot) => {
+      const runs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setFastestRuns(runs);
+    });
+
     return () => {
       unsubscribeImage();
       unsubscribeLastRuns();
       unsubscribeAllHistory();
       unsubscribeLongest();
+      unsubscribeFastest();
     };
   }, []);
 
@@ -96,7 +105,7 @@ function App() {
           >
             ← Back to home
           </button>
-          <StatsPage allWinners={allWinners} longestRuns={longestRuns} />
+          <StatsPage allWinners={allWinners} longestRuns={longestRuns} fastestRuns={fastestRuns} />
         </>
       ) : (
         <>
