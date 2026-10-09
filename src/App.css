@@ -116,11 +116,19 @@ h2 {
   }
 
   .tabs {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    /* Hide scrollbar but allow scrolling */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .tabs::-webkit-scrollbar {
+    display: none; /* WebKit */
   }
 
   .tab-btn {
     padding: 8px 12px;
     font-size: 14px;
+    white-space: nowrap;
   }
 }
